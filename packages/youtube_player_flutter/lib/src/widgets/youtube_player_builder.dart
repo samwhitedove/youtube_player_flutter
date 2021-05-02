@@ -81,7 +81,7 @@ class _YoutubePlayerBuilderState extends State<YoutubePlayerBuilder>
     final child = widget.builder(context, _player);
     return OrientationBuilder(
       builder: (context, orientation) =>
-          orientation == Orientation.portrait ? child : _player,
+          orientation == Orientation.portrait ? child : widget.builder(context, _player);,
     );
   }
 }
