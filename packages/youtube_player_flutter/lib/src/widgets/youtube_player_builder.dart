@@ -11,6 +11,8 @@ class YoutubePlayerBuilder extends StatefulWidget {
   /// Builds the widget below this [builder].
   final Widget Function(BuildContext, Widget) builder;
 
+  final Widget Function(Widget) overlay;
+
   /// Callback to notify that the player has entered fullscreen.
   final VoidCallback? onEnterFullScreen;
 
@@ -22,6 +24,7 @@ class YoutubePlayerBuilder extends StatefulWidget {
     Key? key,
     required this.player,
     required this.builder,
+    required this.overlay,
     this.onEnterFullScreen,
     this.onExitFullScreen,
   }) : super(key: key);
@@ -62,6 +65,10 @@ class _YoutubePlayerBuilderState extends State<YoutubePlayerBuilder>
     super.didChangeMetrics();
   }
 
+  // Widget overlay({overlayt}) {
+  //   return overlay ?? Container();
+  // }
+
   @override
   Widget build(BuildContext context) {
     final _player = Container(
@@ -75,13 +82,27 @@ class _YoutubePlayerBuilderState extends State<YoutubePlayerBuilder>
           }
           return true;
         },
-        child: widget.player,
+        child: Stack(
+          children: [
+            widget.player,
+          ],
+        ),
       ),
     );
     final child = widget.builder(context, _player);
+    final fullscreen = widget.overlay(Stack(
+      children: [
+        _player,
+        const Icon(
+          Icons.menu,
+          size: 100,
+          color: Colors.white10,
+        )
+      ],
+    ));
     return OrientationBuilder(
       builder: (context, orientation) =>
-          orientation == Orientation.portrait ? child : widget.builder(context, _player);,
+          orientation == Orientation.portrait ? child : fullscreen,
     );
   }
 }
